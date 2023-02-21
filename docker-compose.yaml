@@ -22,7 +22,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     ports:
-      - 5433:5432
+      - '${POSTGRES_EXPOSE_PORT}:5432'
 
   metabase:
     image: metabase/metabase
