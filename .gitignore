@@ -1,4 +1,2 @@
 volumes
 .env
-mb_plugins/*
-!mb_plugins/firebird.metabase-driver.jar

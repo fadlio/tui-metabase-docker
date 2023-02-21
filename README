@@ -1,0 +1,5 @@
+# build compose:
+`docker compose build -d`
+
+# copy plugins:
+`docker cp mb_plugins/. metabase-metabase-1:/plugins`

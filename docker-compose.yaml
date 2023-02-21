@@ -42,7 +42,6 @@ services:
     volumes:
       # Volumes where Metabase data will be persisted
       - 'mb-data:/metabase-data'
-      - './mb_plugins:/plugins'
     depends_on:
       - 'db'
 
