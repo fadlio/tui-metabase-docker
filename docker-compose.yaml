@@ -25,7 +25,9 @@ services:
       - '${POSTGRES_EXPOSE_PORT}:5432'
 
   metabase:
-    image: metabase/metabase
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
     restart: always
     environment:
       MB_DB_FILE: '${MB_DB_FILE}'
@@ -36,14 +38,38 @@ services:
       MB_DB_HOST: 'db'
       MB_DB_PASS: '${POSTGRES_PASSWORD}'
       JAVA_TIMEZONE: '${TZ}'
-    ports:
-      # <Port exposed>:<Port running inside container>
-      - '${MB_PORT}:3000'
+    # ports:
+    #   # <Port exposed>:<Port running inside container>
+    #   - '3000:3000'
     volumes:
       # Volumes where Metabase data will be persisted
       - 'mb-data:/metabase-data'
     depends_on:
       - 'db'
+
+  nginx:
+    depends_on:
+      - metabase
+    container_name: nginx_metabase
+    image: nginx:alpine
+    restart: ${RESTART_POLICY}
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /var/run
+      - /var/cache
+      - /var/log/nginx
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/dhparams4096.pem:/dhparams4096.pem
+      - ./certs:/certs:ro
+    environment:
+      # timezone inside container
+      - TZ
+    ports:
+      - ${MB_PORT}:443
 
 volumes:
   db-data:
